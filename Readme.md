@@ -2,30 +2,30 @@
 
 ## Conceito do projeto
 Durante o 1º Semestre de 2022, os calouros da computação tinham a sua disposição [um site de dúvidas](https://github.com/mauriciocsz/Duvidas-IP) para a disciplina de Introdução a Programação. O site era hospedado "de graça" na plataforma conhecida como Heroku. Infelizmente, para a monitoria de 2023 essa plataforma já não estava mais gratuita. Foi feita uma busca por outras opções gratuitas para hospedagem
-do site, sem sucesso. Todas as opções "free" impõem algum tipo de restrição quanto ao uso, como limite de tempo, de banda larga etc. Além do site da monitoria, muitos alunos também desenvolvem seus próprios projetos web, tanto para o [HackoonSpace](https://github.com/hackoonspace), [Maritacas GameDev](https://maritacasgamedev.itch.io/) entre outras entidades do curso, ou mesmo para seu próprio portfólio. Dessa questão surgiu a ideia do bcc-hub : Criar um servidor próprio do curso para comportar as criações dos alunos, grátis, autogerenciado e centralizado, o BCC-HUB!
+do site, sem sucesso. Todas as opções "free" impõem algum tipo de restrição quanto ao uso, como limite de tempo, de banda larga etc. Além do site da monitoria, muitos alunos também desenvolvem seus próprios projetos web, tanto para o [HackoonSpace](https://github.com/hackoonspace), [Maritacas GameDev](https://maritacasgamedev.itch.io/) entre outras entidades do curso, ou mesmo para seu próprio portfólio. Dessa questão surgiu a ideia do projeto : Criar um servidor próprio do curso para comportar as criações dos alunos, grátis, autogerenciado e centralizado, o BCC-HUB!
 
-De forma simplória, um "servidor" nada é mais do que uma máquina executando 24 horas e publicamente acesssível na internet. Apesar de na teoria parecer simples, gerenciar e configurar um servidor físico pode ser bastante complexo, envolvendo não só configuração locais como configurações a nível de rede. Foi necesário o intermédio dos professores e técnincos de TI da [UFSCar](https://www.ufscar.br/) para tornar esse projeto possível, além das definições explicitadas nesse README. O computador que atua como servidor também foi nos emprestado. 
+De forma simplória, um "servidor" nada é mais do que uma máquina executando 24 horas e publicamente acessível na internet. Apesar de na teoria parecer simples, gerenciar e configurar um servidor físico pode ser bastante complexo, envolvendo não só configurações locais como configurações a nível de rede. Foi necessário o intermédio dos professores e técnicos de TI da [UFSCar](https://www.ufscar.br/) para tornar esse projeto possível, além das definições explicitadas nesse README. O computador que atua como servidor também foi emprestado. 
 
-O projeto, portanto, tem como foco preparar e configurar todas as dependências da máquina para receber novos projetos e disponibizá-los... de graça!
+O projeto, portanto, tem como foco preparar e configurar todas as dependências da máquina para receber novos projetos e disponibilizá-los... de graça!
 
-O Restante desse README explicará, de forma simplificada, como essas configurações foram feitas, e sempre que possível, será mostrado as configurações do servidor real no ar. Além disso, deixei um "guia" para quem quiser montar seu próprio servidor web.
+O restante desse README explicará, de forma simplificada, como essas configurações foram feitas, e sempre que possível, será mostrado as configurações do servidor real no ar. Além disso, deixei um "guia" para quem quiser montar seu próprio servidor web.
 ## Pré-requisitos e recursos utilizados
 ### Hardware
-Qualquer computador de mesa no geral pode funcionar como servidor. Obviamente exitem hardwares feitos com esse propósito (e mais caros), mas no geral basta que tenha um processador descente, memória, placa de rede e possa executar sem parar. 
+Qualquer computador de mesa no geral pode funcionar como servidor. Obviamente exitem hardwares feitos com esse propósito (e mais caros), mas no geral basta que tenha um processador decente, memória, placa de rede e possa executar sem parar. 
 
 Especificamente para esse trabalho, foi utilizado o seguinte computador:
 Microcomputador; tipo servidor, c/ processador Xeon X3430 Quad Core, RAM 8 GB, HD 1,25 TB. - Marca IBM
 ### Recursos de Rede
-Para ser "encontrado" na internet você precisará de um IP público. Computadores em redes domésticas obtém um tipo de IP que é chamado de privado pelo roteador e que não são roteáveis na internet. Isso, poque a quantidade de endereços IPv4 estão esgotados hoje em dia. 
+Para ser "encontrado" na internet você precisará de um IP público. Computadores em redes domésticas obtém um tipo de IP que é chamado de privado pelo roteador e que não são roteáveis na internet. Isso porque a quantidade de endereços IPv4 estão esgotados hoje em dia. 
 
-No caso do servidor do projeto, o IP obtido pelos computadores da universidade já é um endereço público e protegido por firewall.
+No caso desse servidor, o IP obtido pelos computadores da universidade já é um endereço público e protegido por firewall.
 
-Talvez seja necessário realizar um [port-forwarding](https://simplificandoredes.com/como-fazer-portforwarding/) se desejar executar em um computador de casa ou utilizar um proxy reverso como o [ngrok](https://ngrok.com/).
+Talvez seja necessário realizar um [port-forwarding](https://simplificandoredes.com/como-fazer-portforwarding/) se desejar executar em um computador de casa, ou utilizar um proxy reverso como o [ngrok](https://ngrok.com/).
 
 ### Software
 Uma diversidade grande de softwares são executados em conjunto para garantir o funcionamento do servidor. Abaixo, deixo um resumo de cada um deles e um breve resumo
 
-* nginx : servidor-web, com capacidade para atuar como gatweay de aplicação e balanceador de carga. Ele é utlizado por "redirecionar" um pedido a um site específico hospedado no hub para um container docker, em que a aplicão/site está "hospedado". Ele é a ponte estre os sites e a internet. Além disso, nele foi configurado certificado SSL e o WAF para requisições inseguras "descriptografadas", ou maliciosas. Esse Readme falará mais sobre esses componentes abaixo
+* nginx : servidor-web, com capacidade para atuar como gateway de aplicação e balanceador de carga. Ele é utilizado por "redirecionar" um pedido a um site específico hospedado no hub para um container docker, em que a aplicação/site está "hospedado". Ele é a ponte entre os sites e a internet. Além disso, nele foi configurado certificado SSL e o WAF para requisições inseguras "descriptografadas", ou maliciosas. Esse Readme falará mais sobre esses componentes abaixo
 
 * sshd : servidor de SSH para acesso remoto. O SSH permite que os administradores e usuários possam acessar o hub remotamente, executar comandos e gerenciar configurações. A porta do serviço em questão, a 22, só está liberada por meio da VPN da universidade, e a autenticação é feita por meio de chaves públicas ED25519
 
@@ -33,21 +33,21 @@ Uma diversidade grande de softwares são executados em conjunto para garantir o 
 
 * fail2ban : ferramenta de banimento automático com base em logs de erros de aplicações. É utilizado em conjunto com o WAF para banir IPs que tenham excedido um limitar definido de requisições maliciosas "permitidas". Ele simplesmente lê o log de auditoria gerado pelo WAF e impede acesso se muitas requisições marcadas como maliciosas foram enviadas.
 
-* daemon docker: serviço de execução de containers docker. Um container é semelhante a uma máquian virtual, emm termos que ele permite isolar processos, que são programas em execução, do resto do sistema. É mais rápdio que uma VM, uma vez que o kernel é compartilhado do "hospedeiro". A vantagem de execuar as aplicações e sites e containers é que eles são auto contidos, e já possuem os softwares que são necessários para executar as aplicações. Além disso, as dependências de um projeto não interferem com a de outro, pois são ambientes isolados, o que permite melhor escalabilidade e gerenciabilidade do ambiente.
+* daemon docker: serviço de execução de containers docker. Um container é semelhante a uma máquina virtual, em termos que ele permite isolar processos, que são programas em execução, do resto do sistema. É mais rápido que uma VM, uma vez que o kernel é compartilhado do "hospedeiro". A vantagem de executar as aplicações e sites e containers é que eles são auto contidos, e já possuem os softwares que são necessários para executar as aplicações. Além disso, as dependências de um projeto não interferem com a de outro, pois são ambientes isolados, o que permite melhor escalabilidade e gerenciabilidade do ambiente.
 
-* modsecurity: é o WAF mencionado acima, ele é um módulo criado originalmente para o apache que foi "conectado" ao nginx. Esse módulo inspeciona cada requisição HTTP procurando indícios de atividade maliciosa, e se detectado , ele impede que a requisição seuqer chegue em um dos containers. As regras de detecção foram providenciadas pela OWASP através da [coreruleset](https://owasp.org/www-project-modsecurity-core-rule-set/).
+* modsecurity: é o WAF mencionado acima, ele é um módulo criado originalmente para o apache que foi "conectado" ao nginx. Esse módulo inspeciona cada requisição HTTP procurando indícios de atividade maliciosa, e se detectado , ele impede que a requisição sequer chegue em um dos containers. As regras de detecção foram providenciadas pela OWASP através da [coreruleset](https://owasp.org/www-project-modsecurity-core-rule-set/).
 
 ### Home-Page
 Foi desenvolvida uma home-page para o projeto também, e ela se encontra nesse repositório do github. Ela é uma adaptação do template providenciado por [html design](https://html.design/)
   
 ## Resumo de configurações
 
-Abaixo, dexarei um resumo de passos feitos para configurar o hub, incluido a instalação de componentes e sua execução. As etapas estão aproximadamente em ordem, mas algumas configurações foram feitas em ordem distinta do que aqui apresentado, porém, para melhor compreensão, elas foram separadas em blocos.
+Abaixo, deixarei um resumo de passos feitos para configurar o hub, incluindo a instalação de componentes e sua execução. As etapas estão aproximadamente em ordem, mas algumas configurações foram feitas em ordem distinta do que aqui apresentado, porém, para melhor compreensão, elas foram separadas em blocos.
 
 ### Instalação do SO e configuração da BIOS
 
 Etapa realizada no laboratório, com acesso físico ao servidor
-Instalação rotineira de sistema operacional. Foi utilizado a distribuição Debian, masi precisamente a versão 11 "bullseye". Além da própria instalação, a BIOS foi configurada para que o computador religue sozinho em caso de falta de energia, garantindo a disponibilidade do servidor. 
+Instalação rotineira de sistema operacional. Foi utilizado a distribuição Debian, mais precisamente a versão 11 "bullseye". Além da própria instalação, a BIOS foi configurada para que o computador religue sozinho em caso de falta de energia, garantindo a disponibilidade do servidor. 
 
 O primeiro usuário criado foi o "monitor" na máquina com nome "bcchub"
 
@@ -55,13 +55,13 @@ O primeiro usuário criado foi o "monitor" na máquina com nome "bcchub"
 
 Esta parte foi feita com ajuda do professor [Fábio Luciano Verdi](https://www.dcomp.ufscar.br/verdi/) e do analista de TI da UFSCar. As etapas estão descritas abaixo. Note que algumas delas ocorreram ao longo de quase todo o projeto.
 
-1. Atrelagem do MAC da interface ethernet do servidor a um IP fixo, distribuido pelo DHCP.
+1. Atrelagem do MAC da interface ethernet do servidor a um IP fixo, distribuído pelo DHCP.
 
 Aqui, fixamos o IP para que ele nunca mude. O computador sempre obterá o mesmo IP do DHCP
 
 2. Atualização do firewall, permitindo tráfego de rede nas portas 80 e 443 do servidor
 
-Apesar do IP obtido ser público (ou seja alcançavel na internet), qualquer acesso externo é barrado pelo firewall. As regras precisaram ser atualizadas para que os usuários possam acessar as páginas web.
+Apesar do IP obtido ser público (ou seja alcançável na internet), qualquer acesso externo é barrado pelo firewall. As regras precisaram ser atualizadas para que os usuários possam acessar as páginas web.
 
 3. Criação de "conta" na VPN da universidade, e liberação da porta 22
 
@@ -77,7 +77,7 @@ Como mencionado, um serviço ssh foi instalado para permitir conectividade:
 sudo apt install sshd
 ```
 
-Em seguida, desabilitou-se o acesso por senha por segurança. Para isso, editou-se "sshd_config" e o atributo PasswordAuthentication foi setado como "no". Além disso, no "home" do usuário monitor, adicionou-se a chave publica do administrador:
+Em seguida, desabilita-se o acesso por senha por segurança. Para isso, editou-se "sshd_config" e o atributo PasswordAuthentication foi setado como "no". Além disso, no "home" do usuário monitor, adicionou-se a chave pública do administrador:
 
 ```bash
 echo "<chave_publica_aqui>" >> ~/.ssh/authorized_keys
@@ -94,7 +94,7 @@ Se desejar replicar o projeto, será necessário realizar mais ou menos os mesmo
 Utilizou-se a versão mainline do nginx, versão 1.25. o tutorial de instalação se encontra aqui:
 [nginx.org](https://nginx.org/en/linux_packages.html#Debian)
 
-Após a instalação, foi feita a configuração da home page do hub no nginx, cujo código fonte se encontra na integra aqui nesse repositório. Para isso, é necessário definir um arquivo contendo um "server-block" na pasta */etc/nginx/sites-available* e criar um link simbólico para esse arquivo na pasta */etc/nginx/sites-enabled* . O arquivo principal, */etc/nginx/nginx.conf*, por hora, não precisa ser modificado, ele já inclui qualquer configuração de sites contidos na pasta *sites-enabled*. Abaixo, deixo um exemplo da configuração inicial para servir uma página web por HTTP.
+Após a instalação, foi feita a configuração da home page do hub no nginx, cujo código fonte se encontra na íntegra aqui nesse repositório. Para isso, é necessário definir um arquivo contendo um "server-block" na pasta */etc/nginx/sites-available* e criar um link simbólico para esse arquivo na pasta */etc/nginx/sites-enabled* . O arquivo principal, */etc/nginx/nginx.conf*, por hora, não precisa ser modificado, ele já inclui qualquer configuração de sites contidos na pasta *sites-enabled*. Abaixo, deixo um exemplo da configuração inicial para servir uma página web por HTTP.
 
 ```
 server {
@@ -132,10 +132,10 @@ sudo systemctl reload nginx
 
 ### Protegendo o servidor
 
-O hub irá abrigar diversas aplicações de desenvolvedores distintos e essas estarão publcimanete disponíveis na internet. Não se sabe de antemão que tipo de aplicação será hospedada, ou quais dados serão guardados. Por isso, se faz necessário criar uma estrutura segura de hospedagem, que possa antender a diferentes requerimentos de segurança das aplicações, além do próprio servidor. Se tratando de segurança web, há trés problemas de segurança que merecem atenção:
+O hub irá abrigar diversas aplicações de desenvolvedores distintos e essas estarão publicamente disponíveis na internet. Não se sabe de antemão que tipo de aplicação será hospedada, ou quais dados serão guardados. Por isso, se faz necessário criar uma estrutura segura de hospedagem, que possa atender a diferentes requerimentos de segurança das aplicações, além do próprio servidor. Se tratando de segurança web, há três problemas de segurança que merecem atenção:
 
 1. Captura de pacotes
-2. Vulnerabilida de aplicação
+2. Vulnerabilidade aplicação
 3. Vulnerabilidade do servidor
 
 O item 1 faz referência a "bisbilhotagem" de pacotes entre o servidor e o cliente. Um ator de ameaça em algum ponto da comunicação pode ler os pacotes e extrair informações comprometedoras, como usuário e senha. Para evitar esse tipo de problema, se usa conexão criptografada, HTTPS. 
@@ -178,11 +178,11 @@ Para mitigação do item 2, a opção escolhida foi instalar um Web Application 
 
 Adicionou-se a diretiva *load_module /etc/nginx/modules/ngx_http_modsecurity_module.so;* para carregar o módulo e ativá-lo com *modsecurity on*. Como mencionado, opera com a Core Rule Set(CRS) da OWASP, que para o projeto está instalada na pasta */usr/local/modsecurity-crs*. O repositório das regras se encontra aqui:  https://github.com/coreruleset/coreruleset.git. 
 
-Na configuração principal do modsecurity, é possível definir se o módulo apenas fará detecção, registrando cada tentativa suspeita, ou ele efetivamente bloqueará a requsição. Esse comportamento é controlado pela diretiva *SecRuleEngine* e para esse projeto, foi definida como *On* (bloqueio ativo):
+Na configuração principal do modsecurity, é possível definir se o módulo apenas fará detecção, registrando cada tentativa suspeita, ou ele efetivamente bloqueará a requisição. Esse comportamento é controlado pela diretiva *SecRuleEngine* e para esse projeto, foi definida como *On* (bloqueio ativo):
 
 ![bloqueio de shell reverso](/readme_images/block.png)
 
-Apesar da corerulest da OWASP cobrir diversos cenários de ataque, ela não impede que uma vulnerabilidade em uma aplicação hospedada seja explorada, apesar de dificultar o trabalho do ator ameaça. Pensando nisso, complementou-se a segurança das aplicações com o software fail2ban, que é capaz de ler logs de erro de programas e tomar uma ação de banimento com base em uma série de tentativas de ataque. A ideia é que um agente ameaça provavelmente fará uma série de solicitações maliciosas mau-sucedidas (identificadas pelo WAF) para tentar encontrar alguma vulnerabilidade e/ou "bypassar" o WAF. Isso desencadeará uma respota do fail2ban que bloqueará qualquer outra requisição desse IP por um longo período de tempo, repelindo a ameaça por hora. Isso também é efetivo contra scanners de vulnerabilidade percorrendo toda a internet e procurando algum alvo vulnerável.
+Apesar da corerulest da OWASP cobrir diversos cenários de ataque, ela não impede que uma vulnerabilidade em uma aplicação hospedada seja explorada, apesar de dificultar o trabalho do ator ameaça. Pensando nisso, complementou-se a segurança das aplicações com o software fail2ban, que é capaz de ler logs de erro de programas e tomar uma ação de banimento com base em uma série de tentativas de ataque. A ideia é que um agente ameaça provavelmente fará uma série de solicitações maliciosas mau-sucedidas (identificadas pelo WAF) para tentar encontrar alguma vulnerabilidade e/ou "bypassar" o WAF. Isso desencadeará uma resposta do fail2ban que bloqueará qualquer outra requisição desse IP por um longo período de tempo, repelindo a ameaça por hora. Isso também é efetivo contra scanners de vulnerabilidade percorrendo toda a internet e procurando algum alvo vulnerável.
 
 A instalação é feita diretamente pelo gerenciador de pacotes do Debian:
 
@@ -214,17 +214,19 @@ failregex = \[client <HOST>\] ModSecurity
 
 HOST é o IP do solicitante. Se a expressão der "match" mais do que x vezes, ele será banido pelo tempo definido na "jaula".
 
+A screenshot abaixo mostra quantos IPs já foram banidos. Todos eles são scanners de vulnerabilidade, percorrendo a web
+
 ![IPs já banidos](/readme_images/ban.png)
 
-Por fim, temos o item 3. Se refere a problemas na própria configuração do nginx ou vulnerabilidades nesse software. A versão do nginx é relativamente recente e não aparenta ter nenhum bug conhecido. Porém, é necesário sempre atualizá-lo para evitar problemas.
+Por fim, temos o item 3. Se refere a problemas na própria configuração do nginx ou vulnerabilidades nesse software. A versão do nginx é relativamente recente e não aparenta ter nenhum bug conhecido. Porém, é necessário sempre atualizá-lo para evitar problemas.
 
 ### Execução dos projetos em containers
 
 Para poder "hostear" vários sites com diferente back-ends e dependências, as aplicações são conteinerizadas em dockers. A instalação do daemon pode ser feita seguindo o passo a passo descrito na [documentação oficial](https://docs.docker.com/engine/install/debian/).
 
-Além disso, para aumentar o nível de segurança e isolamento, os containers são executados a nível de usuário (rootless mode). Na prática, isso significa que cada usuário no hub só poderá intergir com seus próprios containers, e uma eventual invasão bem sucedida só irá ter acesso aos conteúdos dentro do docker, sem permissão de administrador "root". Esse é mais um dos componentes de segurança do hub. [A documentação oficial também explica o passo a passo para realizar esse procedimento](https://docs.docker.com/engine/security/rootless/)
+Além disso, para aumentar o nível de segurança e isolamento, os containers são executados a nível de usuário (rootless mode). Na prática, isso significa que cada usuário no hub só poderá interagir com seus próprios containers, e uma eventual invasão bem sucedida só terá acesso aos conteúdos dentro do docker, sem permissão de administrador "root". Esse é mais um dos componentes de segurança do hub. [A documentação oficial também explica o passo a passo para realizar esse procedimento](https://docs.docker.com/engine/security/rootless/)
 
-No geral, defini-se para as aplicações um *Dockerfile* e um *docker-compose.yml*. Esses arquivos instruem o docker como iniciar o container, executar a aplicação além de fazer as conexões necessárias entre as portas "virtuais" do container e as portas "reais" do host. Para "subir" a aplicação depois, execute:
+No geral, define-se para as aplicações um *Dockerfile* e um *docker-compose.yml*. Esses arquivos instruem o docker como iniciar o container, executar a aplicação além de fazer as conexões necessárias entre as portas "virtuais" do container e as portas "reais" do host. Para "subir" a aplicação depois, execute:
 
 ```bash
 docker compose up
@@ -234,7 +236,7 @@ Para cada aplicação/site no ar, é necessário definir nos arquivos de configu
 
 ![multiplexação de websites pelo nginx](/readme_images/nginx_mult.jpeg)
 
-Essa "multiplexação" se manifesta na forma da diretiva proxy_pass do nginx, sendo que o "destino" é o próprio localhost, em uma porta na qual o docker está "escutando". Além disso, caso os estudantes do curso tenham seu próprio domínio e queiram usar invés do subdomínio bcchub, isso é possível através de um "virtual host", basta que a entrada DNS aponte para o servidor e o nginx consegue encaminhar a solicitação para o docker apropriado apenas com base no cabeçalho "Host:" da requesição web.
+Essa "multiplexação" se manifesta na forma da diretiva proxy_pass do nginx, sendo que o "destino" é o próprio localhost, em uma porta na qual o docker está "escutando". Além disso, caso os estudantes do curso tenham seu próprio domínio e queiram usar invés do subdomínio bcchub, isso é possível através de um "virtual host", basta que a entrada DNS aponte para o servidor e o nginx consegue encaminhar a solicitação para o docker apropriado apenas com base no cabeçalho "Host:" da requisição web.
 
 ```
 location /sitexemplo {
@@ -254,7 +256,7 @@ Essa abordagem funciona bem, mas necessita que a aplicação seja feita em mente
 
 O monitoramento no momento é feito apenas pelo logs gerados pelo nginx, dockers, modsecurity e fail2ban. Para visualização do uso de recursos, a ferramenta utilizada é o htop.
 
-Quanto a disponibilidade, foi configurado uma tarefa que a cada 3 horas dispara 5 pacotes ICMP para o google.com. Caso esse teste falhe, provavelmente o servidor perdeu conexão com a internet por algum motivo, a tarefa reseta o servidor para tentar recolocar ele no ar. Isso é necessário, pois pode haver quedas de internet no campus.
+Quanto à disponibilidade, foi configurado uma tarefa que a cada 3 horas dispara 5 pacotes ICMP para o google.com. Caso esse teste falhe, provavelmente o servidor perdeu conexão com a internet por algum motivo, a tarefa irá resetar o servidor para tentar recolocar ele no ar. Isso é necessário, pois pode haver quedas de internet no campus.
 
 ```bash
 #!/bin/bash
@@ -285,15 +287,15 @@ crontab -e
 # adicione a linha 0 */3 * * * /root/server_health/check_inet.sh
 ```
 
-O hub também foi inscrito em um serviço de "ping" automático, que notifica por email se o servidor não responder a alguma requisição. É possível ver o status do servidor em : [status](https://statuspage.freshping.io/67255-BCChub)
+O hub também foi inscrito em um serviço de "ping" automático, que notifica por e-mail se o servidor não responder a alguma requisição. É possível ver o status do servidor em : [status](https://statuspage.freshping.io/67255-BCChub)
 
 ![status do bcc-hub operacional](/readme_images/hubop.png)
 
 ## Bugs/problemas conhecidos
 
-Atualmente, o hub tem problemas de disponibilidade devido a quedas/picos de energia no campus. Esse problema já ocasinou até a queima da fonte do servidor, que precisou ser trocada. A falta de backup do sitema é um problema também.
+Atualmente, o hub tem problemas de disponibilidade devido a quedas/picos de energia no campus. Esse problema já ocasionou até a queima da fonte do servidor, que precisou ser trocada. A falta de backup do sistema é um problema também.
 
-Além disso, se faz necessário encontrar alguma solução quanto a necessidade de adaptação dos sites para hospedagem. Idealmente, apenas o Dockerfile e compose seriam adicionados na aplicação, isso podendo ser feito por um administrador. 
+Além disso, é necessário encontrar alguma solução quanto a necessidade de adaptação dos sites para hospedagem. Idealmente, apenas o Dockerfile e compose seriam adicionados na aplicação, isso podendo ser feito por um administrador. 
 
 ## Melhorias e metas
 
