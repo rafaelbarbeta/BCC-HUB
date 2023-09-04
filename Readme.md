@@ -38,14 +38,66 @@ Uma diversidade grande de softwares são executados em conjunto para garantir o 
 * modsecurity: é o WAF mencionado acima, ele é um módulo criado originalmente para o apache que foi "conectado" ao nginx. Esse módulo inspeciona cada requisição HTTP procurando indícios de atividade maliciosa, e se detectado , ele impede que a requisição seuqer chegue em um dos containers. As regras de detecção foram providenciadas pela OWASP através da [coreruleset](https://owasp.org/www-project-modsecurity-core-rule-set/).
 
 ### Home-Page
-Foi desenvolvida uma home-page para o projeto também, e ela se encontra nesse repositório do github. Ela é uma adaptação do template providenciado por 
+Foi desenvolvida uma home-page para o projeto também, e ela se encontra nesse repositório do github. Ela é uma adaptação do template providenciado por [html design](https://html.design/)
   
-## Passo a passo
+## Resumo de configurações
 
-## Instalação
+Abaixo, dexarei um resumo de passos feitos para configurar o hub, incluido a instalação de componentes e sua execução. As etapas estão aproximadamente em ordem, mas algumas configurações foram feitas em ordem distinta do que aqui apresentado, porém, para melhor compreensão, elas foram separadas em blocos.
 
+### Instalação do SO e configuração da BIOS
 
-## Execução
+Etapa realizada no laboratório, com acesso físico ao servidor
+Instalação rotineira de sistema operacional. Foi utilizado a distribuição Debian, masi precisamente a versão 11 "bullseye". Além da própria instalação, a BIOS foi configurada para que o computador religue sozinho em caso de falta de energia, garantindo a disponibilidade do servidor. 
+
+O primeiro usuário criado foi o "monitor" na máquina com nome "bcchub"
+
+#### Conectividade, alcançabilidade e acesso remoto
+
+Esta parte foi feita com ajuda do professor [Fábio Luciano Verdi](https://www.dcomp.ufscar.br/verdi/) e do analista de TI da UFSCar. As etapas estão descritas abaixo. Note que algumas delas ocorreram ao longo de quase todo o projeto.
+
+1. Atrelagem do MAC da interface ethernet do servidor a um IP fixo, distribuido pelo DHCP.
+
+Aqui, fixamos o IP para que ele nunca mude. O computador sempre obterá o mesmo IP do DHCP
+
+2. Atualização do firewall, permitindo tráfego de rede nas portas 80 e 443 do servidor
+
+Apesar do IP obtido ser público (ou seja alcançavel na internet), qualquer acesso externo é barrado pelo firewall. As regras precisaram ser atualizadas para que os usuários possam acessar as páginas web.
+
+3. Criação de "conta" na VPN da universidade, e liberação da porta 22
+
+O acesso remoto é feito por ssh, na porta 22. Porém, essa porta só não é bloqueada pelo firewall se a conexão partir da conexão por VPN da universidade, por segurança.
+
+4. Obtenção de nome de domínio, por cima do subdomínio dcomp
+
+Uma entrada no DNS da universidade foi inserido para ser possível acessar o hub por nome, invés de IP, etapa essa necessária para futuramente obter um certificado SSL. O hub é acessível pelo nome [bcchub.dcomp.ufscar.br](https://bcchub.dcomp.ufscar.br). O nome foi decidido a partir de um formulário enviado a todos os estudantes ativos na graduação em Ciência da Computação.
+
+Como mencionado, um serviço ssh foi instalado para permitir conectividade:
+
+```bash
+sudo apt install sshd
+```
+
+Em seguida, desabilitou-se o acesso por senha por segurança. Para isso, editou-se "sshd_config" e o atributo PasswordAuthentication foi setado como "no". Além disso, no "home" do usuário monitor, adicionou-se a chave publica do administrador:
+
+```bash
+echo "<chave_publica_aqui>" >> ~/.ssh/authorized_keys
+```
+Apartir desse ponto, todas as configurações foram feitas remotamente, dentro da VPN da universidade.
+
+Se desejar replicar o projeto, será necessário realizar mais ou menos os mesmos passos. Cabe destacar que talvez seja necessário comprar um nome domínio e IP.
+
+### Instalação do servidor web
+
+### Protegendo o servidor
+
+### Execução dos projetos em containers
+
+### Monitoramento e disponibilidade do Hub
+
+### 
+
+## Dicas de gerenciamento
+
 
 
 ## Bugs/problemas conhecidos
