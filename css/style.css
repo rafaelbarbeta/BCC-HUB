@@ -512,7 +512,6 @@ button {
 /** Sites section **/
 .sites {
      padding: 60px 0 0 30px;
-     font-family: 'Questrial','Monserrat', sans-serif;
      color: #000;
 }
 
@@ -525,9 +524,11 @@ button {
 }
 
 .sites p {
-     font-size: 15px;
-     line-height: 28px;
+     font-size: 18px;
+     line-height: 30px;
      text-align: center;
+     font-weight: bolder;
+
 }
 
 .versites {
@@ -581,12 +582,13 @@ button {
 
 .logos {
      display: flex;
+     flex-wrap: wrap;
      align-items: center;
+     justify-content: center;
 }
 
 .logos img {
-     max-width: 50%;
-     align-self: center;
+     max-width: 30%;
 }
 
 

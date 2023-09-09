@@ -160,7 +160,7 @@
         margin-top: -70px;
     }
     .navigation .navbar-collapse {
-        background: #000;
+        background: #FFF;
         padding: 20px;
         margin-top: 56px;
         position: absolute;
@@ -179,6 +179,10 @@
 
     .versites a {
         padding: 5px 8px;
+    }
+
+    .sites p {
+        font-size: 15px;
     }
 
 }
