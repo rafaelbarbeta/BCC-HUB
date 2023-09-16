@@ -271,6 +271,7 @@ button {
      color: #fff;
      font-size: 16px;
      line-height: 20px;
+     margin-top: 3em;
 }
 
 .navigation.navbar-dark .navbar-nav .nav-link:focus,
@@ -300,13 +301,6 @@ button {
      padding: 40px 40px 40px 40px;
 }
 
-.logo a {
-     font-size: 40px;
-     font-weight: bold;
-     text-transform: uppercase;
-     color: #fff;
-     line-height: 40px;
-}
 
 .banner_main {
      background: #150907;

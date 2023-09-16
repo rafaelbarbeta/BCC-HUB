@@ -157,7 +157,7 @@
         display: inherit !important;
         padding: 0;
         width: 100%;
-        margin-top: -70px;
+        margin-top: -14em;
     }
     .navigation .navbar-collapse {
         background: #FFF;
@@ -184,6 +184,11 @@
     .sites p {
         font-size: 15px;
     }
+}
 
+@media (max-width: 575px) {
+    .navigation.navbar {
+        margin-top: -11em;
+    }
 }
 
