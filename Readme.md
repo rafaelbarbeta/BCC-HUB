@@ -297,18 +297,5 @@ Atualmente, o hub tem problemas de disponibilidade devido a quedas/picos de ener
 
 Além disso, é necessário encontrar alguma solução quanto a necessidade de adaptação dos sites para hospedagem. Idealmente, apenas o Dockerfile e compose seriam adicionados na aplicação, isso podendo ser feito por um administrador. 
 
-## Melhorias e metas
-
-Aqui, destaco algumas metas e recursos que agregariam para o projeto:
-
-- [] Atualização automática de sites, após "push" na main. Integração com Webhooks e Jenkins
-- [] Otimização de mecanismos de busca (SEO). Fazer o BCC-HUB aparecer em primeiro lugar em buscas
-- [] Maior quantidade de sites/apps instalados
-- [] Hostear uma aplicação não HTTP (como um servidor de jogos, bot de discord etc)
-- [] Aumentar a visibilidade do projeto no curso da computação e na UFSCar como um todo
-- [] Construir uma equipe de administradores para operar o Hub
-- [] Adicionar mecanismo de monitoramento de uso gráfico para os administradores.
-- [] Melhorar o hardware do servidor.
-
 ## Autores
 * [Rafael Barbeta](https://github.com/rafaelbarbeta)
